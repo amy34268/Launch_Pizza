@@ -26,12 +26,12 @@ As an example:
 // get a list of pizzas
 app.get('/Pizzas/', async(req, res) => {
 	try{	
-    const pizzas = await orders.getPizzas();
-    res.json(pizzas);
+	    const pizzas = await orders.getPizzas();
+	    res.json(pizzas);
 	}catch(catch){
- 	// error: internal service error 
-    res.statusCode = 500;
-    res.json({});
+ 	    // error: internal service error 
+	    res.statusCode = 500;
+	    res.json({});
 }
 }
 
@@ -79,7 +79,7 @@ orders.add = async (pizzaId, receipt) => {
     try {
       orderId = new mongoose.Types.ObjectId().toString();
       await db.orders.insertOne(
-        {id: orderId, pizzaId: pizzaId, receipt: receipt}
+	    {id: orderId, pizzaId: pizzaId, receipt: receipt}
       ); 
       // status code 201: The request has been fulfilled and has resulted in one or more new resources being created. 
       resolve({code: 201, orders: order});

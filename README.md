@@ -10,12 +10,12 @@ You are a business owner at Launch-Pizza. One day you decide to open your store 
 <li>As a user, I want to be able to see a receipt for their order for up to one year.</li>
 </ul>
 
-The backend of this Launchi-Pizza ordering service will be implemented using NodeJS and Express framework. Users will be able to perform CRUD (create, read, update, delete) operations to make online-purchases, so we have Rest API endpoints defined in order to handle these HTTP requests.
+The backend of this Launchi-Pizza ordering service will be implemented using  <strong>NodeJS and Express framework  </strong>. Users will be able to perform  <strong>CRUD (create, read, update, delete) </strong>operations to make online-purchases, so we have  <strong> Rest API endpoints  </strong> defined in order to handle these HTTP requests.
 
 
 <h2> UI Prototype on Figma </h2> 
-
-When the website is initially loaded, a **GET request** is sent to the backend to retrieve a list of pizzas (from ideally a database such as MongoDB)  to display on the top of the website.
+<img src="https://github.com/amy34268/Launch_Pizza/blob/main/Pizza%20UI.png">
+When the website is initially loaded, a <strong>GET request</strong> is sent to the backend to retrieve a list of pizzas (from ideally a database such as MongoDB)  to display on the top of the website.
 
 As an example: 
 

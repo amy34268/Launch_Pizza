@@ -114,7 +114,7 @@ app.get('/Orders/', async(req, res) => {
 ```
 /* order.js*/
 order.getOrdersInOneYear = async() => {
-	// <strong> Create a date object for today's date</strong>  
+	//  Create a date object for today's date
 	//  will appear as: Sun Sep 18 2022 23:04:56 GMT-0700 (Pacific Daylight Time)
 	//  let date = new Date(); 
 	//  We could subtract one year from today's date like this according to https://www.techwalla.com/articles/how-to-subtract-one-year-from-a-date-in-javascript

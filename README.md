@@ -92,32 +92,38 @@ orders.add = async (pizzaId, receipt) => {
 	
 
 <h2> Story 3: As a user, I want to be able to see a <strong> receipt </strong> for their order for <strong> up to one year </strong>. </h2>
+Users will be able to view a list of their past orders, as <strong> receipt is a field of orders</strong>, essentially we are makign a  <strong>GET request</strong> for all the receipts <strong> but only up to one year </strong>, this flitering can be done by the database (MongoDB) by passing in <strong> today's date </strong> and let the db return only the orders within this specified time period.
 
-Add Schema (receipt inside order) 
-Up to one year constraint 
 
 ```
 /* app.js*/
-// get a list of order (ALL of them) 
+
+/* Get a list of orders (receipt) up to one year*/
 app.get('/Orders/', async(req, res) => {
-	try{	
-    const orders = await orders.getOrders();
-    res.json(orders);
-	}catch(catch){
- 	// error: internal service error 
-    res.statusCode = 500;
-    res.json({});
-}
-}
+    try {
+        const orders = await orders.getOrdersInOneYear();
+        res.statusCode = orders.code;
+        res.json(orders);
+    } catch (error) {
+        res.statusCode = 500;
+        res.json({});
+    }
+})
 ```
 
 ```
 /* order.js*/
-order.getOrders = async() => {
+order.getOrdersInOneYear = async() => {
+	// <strong> Create a date object for today's date</strong>  
+	//  will appear as: Sun Sep 18 2022 23:04:56 GMT-0700 (Pacific Daylight Time)
+	//  let date = new Date(); 
+	//  We could subtract one year from today's date like this according to https://www.techwalla.com/articles/how-to-subtract-one-year-from-a-date-in-javascript
+	//  const oneYearAgo = date.setMonth(date.getMonth() – 12);
   return new Promise(async(resolve,reject) => {
        try{
            await db.connect();
-           const allOrders= await db.order.find({});
+	   // Here we are asking for all orders that are created <strong>AFTER <strong> a year ago
+           const allOrders= await db.order.find({"createdAt" : { $gte : oneYearAgo }});
            // status code 200: OK            
            resolve({code: 200, results: allOrders});
        } catch (e) {
@@ -126,4 +132,4 @@ order.getOrders = async() => {
    })
 }
 ```
-// error codes
+

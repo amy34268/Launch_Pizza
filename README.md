@@ -52,13 +52,14 @@ pizza.getPizzas = async() => {
    })
 }
 ```
-<h4> Story 1: As a user, I want to order a pizza from a set menu. </h4> 
-Users will be able to view a list of pizza, click on the Add button to order a specific pizza, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>id</strong> of the pizza picked, and a receipt) to the backend endpoint. 
-<strong> (endpoint) </strong?
+<h2> Story 1: As a user, I want to order a pizza from a set menu. </h2> 
+Users will be able to view a list of pizza, click on the Add button to order a specific pizza, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>id</strong> of the pizza picked, and a receipt for that order) to the backend endpoint. 
+
+<strong> (endpoint) </strong>
 
 ```	
 /*app.js*/
-// Add a order (that has a chosen pizza)  to the the list of orders
+// Add a order (that has a chosen pizza's id and a receipt) to the the list of orders
 app.post('/Orders', async(req, res) => {
     try {
         const orders = await orders.add(req.params.pizzaId, req.params.receipt);
@@ -70,6 +71,7 @@ app.post('/Orders', async(req, res) => {
     }
 });
 ```
+
 ```
 /*orders.js*/
 orders.add = async (pizzaId, receipt) => {
@@ -89,7 +91,7 @@ orders.add = async (pizzaId, receipt) => {
 ```
 	
 
-<h4> Story 3: As a user, I want to be able to see a <strong> receipt </strong> for their order for <strong> up to one year </strong>. </h4>
+<h2> Story 3: As a user, I want to be able to see a <strong> receipt </strong> for their order for <strong> up to one year </strong>. </h2>
 
 Add Schema (receipt inside order) 
 Up to one year constraint 

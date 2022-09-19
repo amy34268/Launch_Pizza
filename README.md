@@ -23,7 +23,7 @@ As an example:
 
 ```
 /* app.js*/
-// get a list of pizzs
+// get a list of pizzas
 app.get('/Pizzas/', async(req, res) => {
 	try{	
     const pizzas = await orders.getPizzas();
@@ -89,6 +89,73 @@ orders.add = async (pizzaId, receipt) => {
   });
 };
 ```
+
+<h2>Story 2: As a user, I want to  track the order status of the pizza.</h2>
+
+I have defined the order <strong> Status</strong> to be of the following: 
+<ul> 
+  <li>baking</li>
+  <li>ready for pickup</li>
+  <li> order completed </li>
+</ul>
+Therefore, we should <strong>add a new field: status</strong> to our <strong> order Schema </strong>, now the schema should look like this: 
+
+```
+/* order Schema */
+const orderSchema = {
+    _id: {
+        type: ObjectId,
+        required: true
+    },
+    pizzaId: {
+        type: String,
+        required: true
+    },
+    reciept: {
+        type: Object,
+        required: true
+    },
+    order: {
+        type: String,
+        required: true
+    }
+}
+```
+As the order status is now <strong> a field of order </strong>, tracking it is essentially making a <strong> GET request </strong> to retrieve the list of orders, and users will be able to see the status label attach to a specific order. 
+
+
+```
+/* app.js*/
+// get a list of orders
+app.get('/Order/', async(req, res) => {
+	try{	
+	    const orders = await orders.getAllOrders();
+	    res.json(orders);
+	}catch(catch){
+ 	    // error: internal service error 
+	    res.statusCode = 500;
+	    res.json({});
+	}
+}
+
+```
+
+```
+/* order.js*/
+order.getOrders = async() => {
+  return new Promise(async(resolve,reject) => {
+       try{
+           const getOrders= await db.order.find({});
+           // status: OK            
+           resolve({code: 200, results: getOrders});
+       } catch (e) {         
+          reject({code: 500, error: e});
+       }
+   })
+}
+```
+
+
 	
 
 <h2> Story 3: As a user, I want to be able to see a <strong> receipt </strong> for their order for <strong> up to one year </strong>. </h2>

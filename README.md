@@ -145,9 +145,9 @@ app.get('/Order/', async(req, res) => {
 order.getOrders = async() => {
   return new Promise(async(resolve,reject) => {
        try{
-           const getOrders= await db.order.find({});
+           const orders = await db.order.find({});
            // status: OK            
-           resolve({code: 200, results: getOrders});
+           resolve({code: 200, results: orders});
        } catch (e) {         
           reject({code: 500, error: e});
        }
@@ -183,9 +183,9 @@ app.get('/Orders/', async(req, res) => {
 order.getOrdersInOneYear = async() => {
 	//  Create a date object for today's date
 	//  will appear as: Sun Sep 18 2022 23:04:56 GMT-0700 (Pacific Daylight Time)
-	//  let date = new Date(); 
+	  let date = new Date(); 
 	//  We could subtract one year from today's date like this according to https://www.techwalla.com/articles/how-to-subtract-one-year-from-a-date-in-javascript
-	//  const oneYearAgo = date.setMonth(date.getMonth() – 12);
+	  const oneYearAgo = date.setMonth(date.getMonth() – 12);
   return new Promise(async(resolve,reject) => {
        try{
 	   // Here we are asking for all orders that are created AFTER a year ago

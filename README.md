@@ -121,9 +121,8 @@ order.getOrdersInOneYear = async() => {
 	//  const oneYearAgo = date.setMonth(date.getMonth() – 12);
   return new Promise(async(resolve,reject) => {
        try{
-           await db.connect();
-	   // Here we are asking for all orders that are created <strong>AFTER <strong> a year ago
-           const allOrders= await db.order.find({"createdAt" : { $gte : oneYearAgo }});
+	   // Here we are asking for all orders that are created AFTER a year ago
+           const allOrders = await db.order.find({"createdAt" : { $gte : oneYearAgo }});
            // status code 200: OK            
            resolve({code: 200, results: allOrders});
        } catch (e) {

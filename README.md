@@ -23,7 +23,47 @@ As an example:
 
 ```
 /* app.js*/
-// get list of order 
+// get a list of pizzs
+app.get('/Pizzas/', async(req, res) => {
+	try{	
+    const pizzas = await orders.getPizzas();
+    res.json(pizzas);
+	}catch(catch){
+ 	// error: internal service error 
+    res.statusCode = 500;
+    res.json({});
+}
+}
+
+```
+
+```
+/* pizza.js*/
+pizza.getPizzas = async() => {
+  return new Promise(async(resolve,reject) => {
+       try{
+           await db.connect();
+           const allPizzas= await db.pizzas.find({});
+           // status: OK            
+           resolve({code: 200, results: allPizzas});
+       } catch (e) {
+          // error: internal service error?          
+          reject({code: 500, error: e});
+       }
+   })
+}
+```
+<h4> Story 1: As a user, I want to order a pizza from a set menu. </h4> 
+Users will be able to view a list of pizza, click on the Add button to order, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>id</strong> of the pizza picked) to the backend endpoint. 
+
+<h4> Story 3: As a user, I want to be able to see a <strong> receipt </strong> for their order for <strong> up to one year </strong>.</li>
+
+Add Schema (receipt inside order) 
+Up to one year constraint 
+
+```
+/* app.js*/
+// get a list of order (ALL of them) 
 app.get('/Orders/', async(req, res) => {
 	try{	
     const orders = await orders.getOrders();
@@ -36,10 +76,8 @@ app.get('/Orders/', async(req, res) => {
 }
 
 ```
-
-```
 /* order.js*/
-order.getAll = async() => {
+order.getOrders = async() => {
   return new Promise(async(resolve,reject) => {
        try{
            await db.connect();
@@ -53,5 +91,3 @@ order.getAll = async() => {
    })
 }
 ```
-<h4> Story 1: As a user, I want to  order a pizza from a set menu. </h4> 
-Users will be able to view a list of pizza, click on the Add button to order, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>id</strong> of the pizza picked) to the backend endpoint. 

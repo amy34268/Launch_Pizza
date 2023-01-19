@@ -15,7 +15,7 @@ The backend of this Launchi-Pizza ordering service will be implemented using  <s
 
 <h2> UI Prototype on Figma </h2> 
 <img src="https://github.com/amy34268/Launch_Pizza/blob/main/Pizza%20UI.png">
-When the website is initially loaded, a <strong>GET request</strong> is sent to the backend to retrieve a list of pizzas (from ideally a database such as MongoDB)  to display on the top of the website. (And a list of orders in similar logic, but there is none at the moment as shown on the prototype)
+When the website is initially loaded, a <strong>GET request</strong> is sent to the backend to retrieve a list of pizzas (from ideally a database such as MongoDB)  to display on the top of the website. 
 
 As an example: 
 
@@ -26,7 +26,7 @@ As an example:
 // get a list of pizzas
 app.get('/Pizzas/', async(req, res) => {
 	try{	
-	    const pizzas = await orders.getPizzas();
+	    const pizzas = await pizza.getPizzas();
 	    res.json(pizzas);
 	}catch(catch){
  	    // error: internal service error 
@@ -52,6 +52,40 @@ pizza.getPizzas = async() => {
    })
 }
 ```
+Similarly, if the user has a list of past orders (none atm as shown on the prototype), we would fetch a <strong> GET </strong> request, and exepct a <strong> 200 OK </strong>, when the response is succesfully returned.
+
+```
+/* app.js*/
+// get a list of orders
+app.get('/Orders', async(req, res) => {
+	try{	
+	    const orders = await orders.getAllOrders();
+	    res.json(orders);
+	}catch(error){
+ 	    // error: internal service error 
+	    res.statusCode = 500;
+	    res.json({});
+	}
+}
+
+```
+
+```
+/* orders.js*/
+orders.getAllOrders = async() => {
+    return new Promise(async(resolve,reject) => {
+         try{
+             const orders = await db.order.find({});
+             // status: OK            
+             resolve({code: 200, results: orders});
+         } catch (e) {         
+            reject({code: 500, error: e});
+         }
+     })
+  }
+``` 
+
+
 <h2> Story 1: As a user, I want to order a pizza from a set menu. </h2> 
 Users will be able to view a list of pizza, click on the Add button to order a specific pizza, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>id</strong> of the pizza picked, and a receipt for that order) to the backend endpoint. 
 
@@ -121,17 +155,17 @@ const orderSchema = {
     }
 }
 ```
-As the order status is now <strong> a field of order </strong>, tracking it is essentially making a <strong> GET request </strong> to retrieve the list of orders, and users will be able to see the status label attach to a specific order. 
+As the order status is now <strong> a field of order </strong>, tracking it is essentially making a <strong> GET request </strong> to retrieve a specific order. When the user cliks on the orde to view order details, the <strong> order.id </strong> will be passed as request params, which we will use to fetch the speciic order in database. Once succesfullly reutrne,d user will able to see the status label attach to a specific order. 
 
 
 ```
 /* app.js*/
-// get a list of orders
-app.get('/Order/', async(req, res) => {
+// get a specic order's id in order to show user order status 
+app.get('/Order/:id', async(req, res) => {
 	try{	
-	    const orders = await orders.getAllOrders();
-	    res.json(orders);
-	}catch(catch){
+	    const order = await orders.getOrderStatus(req.orderId);
+	    res.json(order);
+	}catch(error){
  	    // error: internal service error 
 	    res.statusCode = 500;
 	    res.json({});
@@ -142,20 +176,20 @@ app.get('/Order/', async(req, res) => {
 
 ```
 /* order.js*/
-order.getOrders = async() => {
-  return new Promise(async(resolve,reject) => {
-       try{
-           const orders = await db.order.find({});
-           // status: OK            
-           resolve({code: 200, results: orders});
-       } catch (e) {         
-          reject({code: 500, error: e});
-       }
-   })
+
+// get a specic order's id in order to show user order status 
+app.get('/Order/:id', async(req, res) => {
+	try{	
+	    const order = await orders.getOrderStatus(req.orderId);
+	    res.json(order);
+	}catch(error){
+ 	    // error: internal service error 
+	    res.statusCode = 500;
+	    res.json({});
+	}
 }
+
 ```
-
-
 	
 
 <h2> Story 3: As a user, I want to be able to see a <strong> receipt </strong> for their order for <strong> up to one year </strong>. </h2>
@@ -166,7 +200,7 @@ Users will be able to view a list of their past orders, as <strong> receipt is a
 /* app.js*/
 
 /* Get a list of orders (receipt) up to one year*/
-app.get('/Orders/', async(req, res) => {
+app.get('/Orders/InOneYear', async(req, res) => {
     try {
         const orders = await orders.getOrdersInOneYear();
         res.statusCode = orders.code;

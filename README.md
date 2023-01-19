@@ -15,7 +15,7 @@ The backend of this Launchi-Pizza ordering service will be implemented using  <s
 
 <h2> UI Prototype on Figma </h2> 
 <img src="https://github.com/amy34268/Launch_Pizza/blob/main/Pizza%20UI.png">
-When the website is initially loaded, a <strong>GET request</strong> is sent to the backend to retrieve a list of pizzas (from ideally a database such as MongoDB)  to display on the top of the website. 
+When the website is initially loaded, a <strong>GET request</strong> is sent to the backend to retrieve a list of pizzas (from ideally a database such as MongoDB since datas will be persistent)  to display on the top of the website. 
 
 As an example: 
 
@@ -23,6 +23,7 @@ As an example:
 
 ```
 /* app.js*/
+
 // get a list of pizzas
 app.get('/Pizzas/', async(req, res) => {
 	try{	
@@ -32,13 +33,13 @@ app.get('/Pizzas/', async(req, res) => {
  	    // error: internal service error 
 	    res.statusCode = 500;
 	    res.json({});
+	}
 }
-}
-
 ```
 
 ```
 /* pizza.js*/
+
 pizza.getPizzas = async() => {
   return new Promise(async(resolve,reject) => {
        try{
@@ -56,6 +57,7 @@ Similarly, if the user has a list of past orders (none atm as shown on the proto
 
 ```
 /* app.js*/
+
 // get a list of orders
 app.get('/Orders', async(req, res) => {
 	try{	
@@ -72,6 +74,7 @@ app.get('/Orders', async(req, res) => {
 
 ```
 /* orders.js*/
+
 orders.getAllOrders = async() => {
     return new Promise(async(resolve,reject) => {
          try{
@@ -87,12 +90,13 @@ orders.getAllOrders = async() => {
 
 
 <h2> Story 1: As a user, I want to order a pizza from a set menu. </h2> 
-Users will be able to view a list of pizza, click on the Add button to order a specific pizza, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>id</strong> of the pizza picked, and a receipt for that order) to the backend endpoint. 
+Users will be able to view a list of pizza, click on the Add button to order a specific pizza, which will make a <strong>POST request with Axios in React</strong>, and send the data (the <strong>pizza.id</strong> of the pizza picked, and a receipt for that order) to the backend endpoint. 
 
 <strong> (endpoint) </strong>
 
 ```	
 /*app.js*/
+
 // Add a order (that has a chosen pizza's id and a receipt) to the the list of orders
 app.post('/Orders', async(req, res) => {
     try {
@@ -108,6 +112,7 @@ app.post('/Orders', async(req, res) => {
 
 ```
 /*orders.js*/
+
 orders.add = async (pizzaId, receipt) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -136,6 +141,7 @@ Therefore, we should <strong>add a new field: status</strong> to our <strong> or
 
 ```
 /* order Schema */
+
 const orderSchema = {
     _id: {
         type: ObjectId,
@@ -155,12 +161,13 @@ const orderSchema = {
     }
 }
 ```
-As the order status is now <strong> a field of order </strong>, tracking it is essentially making a <strong> GET request </strong> to retrieve a specific order. When the user cliks on the orde to view order details, the <strong> order.id </strong> will be passed as request params, which we will use to fetch the speciic order in database. Once succesfullly reutrne,d user will able to see the status label attach to a specific order. 
+As the order status is now <strong> a field of order </strong>, tracking it is essentially making a <strong> GET request </strong> to retrieve a specific order. When the user cliks on the order to view its details, the <strong> order.id </strong> will be passed as a request param, which we will use to fetch the speciic order in database. Once succesfullly returned, user will able to see the status label attach to a specific order. 
 
 
 ```
 /* app.js*/
-// get a specic order's id in order to show user order status 
+
+// get a specific order based on id to show user the order's status 
 app.get('/Order/:id', async(req, res) => {
 	try{	
 	    const order = await orders.getOrderStatus(req.orderId);
@@ -177,17 +184,17 @@ app.get('/Order/:id', async(req, res) => {
 ```
 /* order.js*/
 
-// get a specic order's id in order to show user order status 
-app.get('/Order/:id', async(req, res) => {
-	try{	
-	    const order = await orders.getOrderStatus(req.orderId);
-	    res.json(order);
-	}catch(error){
- 	    // error: internal service error 
-	    res.statusCode = 500;
-	    res.json({});
-	}
-}
+orders.getOrderStatus = async(orderId) => {
+    return new Promise(async(resolve,reject) => {
+         try{
+             const order = await db.order.find({id: orderId});
+             // status: OK            
+             resolve({code: 200, results: order});
+         } catch (e) {         
+            reject({code: 500, error: e});
+         }
+     })
+  }
 
 ```
 	
@@ -214,6 +221,7 @@ app.get('/Orders/InOneYear', async(req, res) => {
 
 ```
 /* order.js*/
+
 order.getOrdersInOneYear = async() => {
 	//  Create a date object for today's date
 	//  will appear as: Sun Sep 18 2022 23:04:56 GMT-0700 (Pacific Daylight Time)
